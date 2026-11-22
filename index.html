@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chore Credits</title>
+<meta name="theme-color" content="#F2F4F9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10131D" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Chores">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap">
+<style>
+:root {
+  --bg: #F2F4F9; --surface: #FFFFFF; --sunk: #E8ECF4; --ink: #1B2240; --muted: #5B6383; --line: #DCE1EC;
+  --coin: #F2B417; --coin-deep: #6E4C00; --coin-soft: #FDF1CC;
+  --go: #1B9265; --go-soft: #DDF3EA; --stop: #C9453F; --stop-soft: #FBE4E2;
+  --on-go: #FFFFFF;
+  --display: "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --body: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #10131D; --surface: #191E2C; --sunk: #222839; --ink: #E7EAF4; --muted: #99A1BD; --line: #2A3146;
+    --coin: #F5C342; --coin-deep: #4A3300; --coin-soft: #3A3016;
+    --go: #3CC48F; --go-soft: #173A2E; --stop: #F07570; --stop-soft: #3E2124; --on-go: #0B1A14;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.45; min-height: 100vh; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--coin); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+.wrap {
+  max-width: 640px; margin: 0 auto;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 14px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 90px);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 16px;
+}
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.mark { width: 36px; height: 36px; border-radius: 50%; background: var(--coin); box-shadow: inset 0 -3px 0 rgb(0 0 0 / .14);
+  display: grid; place-items: center; font-family: var(--display); font-weight: 800; font-size: 19px; color: var(--coin-deep); }
+h1 { font-family: var(--display); font-weight: 700; font-size: 1.5rem; line-height: 1; margin: 0; }
+h2 { font-family: var(--display); font-weight: 700; font-size: 1.15rem; margin: 0; line-height: 1.2; }
+.sub { color: var(--muted); font-size: .82rem; margin: 2px 0 0; }
+.hint { color: var(--muted); margin: 0; font-size: .9rem; }
+.live { display: inline-flex; align-items: center; gap: 6px; font-size: .78rem; color: var(--muted); font-weight: 700; }
+.live::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.live.on::before { background: var(--go); }
+
+.kids { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.kid { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px;
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 10px; }
+.kid-name { font-family: var(--display); font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--kid, var(--muted)); flex: none; }
+.kid-meta { color: var(--muted); font-size: .78rem; }
+.kid-bal { grid-row: 1 / span 2; grid-column: 2; display: flex; align-items: center; gap: 7px; font-family: var(--display);
+  font-weight: 800; font-size: 1.9rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.coin { width: 20px; height: 20px; border-radius: 50%; background: var(--coin); box-shadow: inset 0 -3px 0 rgb(0 0 0 / .15); flex: none; }
+
+.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; background: var(--surface); border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: max(8px, env(safe-area-inset-left, 0px)); padding-right: max(8px, env(safe-area-inset-right, 0px)); }
+.tabs-in { max-width: 640px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr); }
+.tab { border: 0; background: none; padding: 9px 2px 8px; display: flex; flex-direction: column; align-items: center; gap: 1px;
+  font-size: .72rem; font-weight: 700; color: var(--muted); position: relative; }
+.tab .ti { font-size: 1.25rem; line-height: 1.1; filter: grayscale(1); opacity: .7; }
+.tab[aria-selected="true"] { color: var(--ink); }
+.tab[aria-selected="true"] .ti { filter: none; opacity: 1; }
+.badge { position: absolute; top: 4px; left: calc(50% + 8px); background: var(--coin); color: var(--coin-deep); border-radius: 999px;
+  font-size: .7rem; padding: 0 6px; line-height: 1.5; font-variant-numeric: tabular-nums; }
+
+.panel { display: flex; flex-direction: column; gap: 10px; }
+.row { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px;
+  display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+button.row { text-align: left; width: 100%; }
+.ico { width: 40px; height: 40px; border-radius: 10px; background: var(--sunk); display: grid; place-items: center; font-size: 22px; }
+.row-main { min-width: 0; }
+.row-title { font-weight: 700; overflow-wrap: anywhere; }
+.row-sub { color: var(--muted); font-size: .82rem; display: flex; gap: 4px 10px; flex-wrap: wrap; align-items: center; }
+.who { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; color: var(--kid); }
+.amt { font-family: var(--display); font-weight: 800; font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+.amt.plus { color: var(--go); } .amt.minus { color: var(--stop); }
+.actions { display: flex; gap: 8px; grid-column: 1 / -1; }
+.actions .btn { flex: 1; }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 9px 14px; font-weight: 700; font-size: .92rem; }
+.btn:disabled { opacity: .5; }
+.btn.go { background: var(--go); border-color: var(--go); color: var(--on-go); }
+.btn.stop { color: var(--stop); }
+.btn.armed { background: var(--stop); border-color: var(--stop); color: var(--surface); }
+.btn.small { padding: 6px 10px; font-size: .84rem; }
+.pill { background: var(--coin-soft); border-radius: 999px; padding: 1px 9px; font-weight: 700; font-size: .78rem; font-variant-numeric: tabular-nums; }
+.chip { font-size: .74rem; font-weight: 700; border-radius: 999px; padding: 0 7px; color: var(--kid); border: 1px solid currentColor; }
+.empty { border: 1.5px dashed var(--line); border-radius: 14px; padding: 26px 18px; text-align: center; color: var(--muted); }
+.empty strong { display: block; color: var(--ink); font-family: var(--display); font-size: 1.1rem; }
+.section-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 6px; }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: .8rem; color: var(--muted); font-weight: 700; min-width: 0; }
+.field input, .field select { border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 10px 11px; width: 100%; font-size: 1rem; color: var(--ink); }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) 110px; gap: 10px; }
+.checks { display: flex; gap: 14px; flex-wrap: wrap; font-weight: 700; }
+.checks label { display: inline-flex; align-items: center; gap: 6px; color: var(--kid); }
+.checks input { width: 20px; height: 20px; }
+.icons { display: grid; grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); gap: 6px; }
+.icons button { border: 1px solid var(--line); background: var(--bg); border-radius: 10px; font-size: 22px; aspect-ratio: 1; padding: 0; }
+.icons button[aria-pressed="true"] { border-color: var(--coin); background: var(--coin-soft); box-shadow: 0 0 0 2px var(--coin); }
+.form-foot { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.err { color: var(--stop); font-weight: 700; font-size: .9rem; margin: 0; }
+.code { font-family: var(--display); font-weight: 800; font-size: 2.4rem; letter-spacing: .18em; text-align: center; background: var(--coin-soft);
+  border-radius: 12px; padding: 6px 0; font-variant-numeric: tabular-nums; }
+ol.steps { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(env(safe-area-inset-bottom, 0px) + 78px); z-index: 9;
+  background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 999px; font-weight: 700; font-size: .9rem; max-width: 90vw; }
+.auth { max-width: 380px; margin: 8vh auto 0; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--sunk); padding: 4px; border-radius: 12px; gap: 4px; }
+.seg button { border: 0; background: none; border-radius: 9px; padding: 8px; font-weight: 700; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); }
+.status { font-size: .78rem; font-weight: 700; border-radius: 999px; padding: 1px 8px; }
+.status.ok { background: var(--go-soft); color: var(--go); }
+.status.off { background: var(--sunk); color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) { .row.new { animation: pop .35s ease-out; } }
+@keyframes pop { from { transform: scale(.97); opacity: .3; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div class="toast" id="toast" hidden></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script>
+(() => {
+'use strict';
+
+// ------------------------------------------------------------------ pictures (same set as the device)
+const ICONS = {
+  BED: '🛏️', TEDDY: '🧸', PLATES: '🍽️', TOOTHBRUSH: '🪥', SHOE: '👟', SPONGE: '🧽', BOOKS: '📚', MOON: '🌙',
+  BROOM: '🧹', BASKET: '🧺', PLANT: '🪴', BACKPACK: '🎒', SOCKS: '🧦', SHOWER: '🚿', DOG: '🐕',
+  TV: '📺', FILM: '🎬', CLOCK: '⏰', COIN: '🪙', ICECREAM: '🍦', GAME: '🎮', PIZZA: '🍕', PALETTE: '🎨', PARK: '🛝', STAR: '⭐'
+};
+const CHORE_ICONS = ['BED','TEDDY','PLATES','TOOTHBRUSH','SHOE','SPONGE','BOOKS','MOON','BROOM','BASKET','PLANT','BACKPACK','SOCKS','SHOWER','DOG','STAR'];
+const REWARD_ICONS = ['TV','FILM','CLOCK','COIN','ICECREAM','GAME','PIZZA','PALETTE','PARK','BOOKS','STAR'];
+const pic = k => ICONS[k] || ICONS.STAR;
+
+// ------------------------------------------------------------------ data layer
+const cfg = window.CHORE_CONFIG || {};
+const api = window.__FAKE_API__ || makeApi();
+
+function makeApi() {
+  if (!cfg.supabaseUrl || cfg.supabaseUrl.startsWith('PASTE')) return null;
+  const sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseKey, { auth: { persistSession: true, autoRefreshToken: true } });
+  const ok = ({ data, error }) => { if (error) throw new Error(error.message); return data; };
+  return {
+    async session() { return ok(await sb.auth.getSession()).session; },
+    onAuth(cb) { sb.auth.onAuthStateChange((_e, s) => cb(s)); },
+    async signIn(email, password) { return ok(await sb.auth.signInWithPassword({ email, password })); },
+    async signUp(email, password) { const d = ok(await sb.auth.signUp({ email, password })); if (!d.session) throw new Error('Account made, but Supabase wants email confirmation. Turn off "Confirm email" in Supabase, or click the link in your inbox, then sign in.'); return d; },
+    async signOut() { await sb.auth.signOut(); },
+    async isParent() { return ok(await sb.rpc('is_parent')); },
+    async join(name, code) { return ok(await sb.rpc('join_household', { p_name: name, p_code: code || null })); },
+    async me() { return ok(await sb.rpc('parent_name')); },
+    async load() {
+      const [kids, balances, chores, rewards, pending, ledger, devices, household] = await Promise.all([
+        sb.from('kids').select('*').order('sort'),
+        sb.from('balances').select('*'),
+        sb.from('chores').select('*, chore_kids(kid_id)').order('sort').order('created_at'),
+        sb.from('rewards').select('*').order('cost'),
+        sb.from('requests').select('*').eq('status', 'pending').order('created_at', { ascending: false }),
+        sb.from('ledger').select('*').order('created_at', { ascending: false }).limit(80),
+        sb.from('devices').select('id, kid_id, paired_at, last_seen, battery, firmware, pair_code, pair_expires'),
+        sb.from('household').select('*').single(),
+      ].map(p => p.then(ok)));
+      return { kids, balances, chores, rewards, pending, ledger, devices, household };
+    },
+    async resolve(id, approve) { return ok(await sb.rpc('resolve_request', { p_request: id, p_approve: approve })); },
+    async adjust(kid, amount, label) { return ok(await sb.rpc('adjust_balance', { p_kid: kid, p_amount: amount, p_label: label || null })); },
+    async saveChore(c, kidIds) {
+      const row = { name: c.name, icon: c.icon, credits: c.credits };
+      let id = c.id;
+      if (id) ok(await sb.from('chores').update(row).eq('id', id));
+      else id = ok(await sb.from('chores').insert({ ...row, sort: 100 }).select('id').single()).id;
+      ok(await sb.from('chore_kids').delete().eq('chore_id', id));
+      if (kidIds.length) ok(await sb.from('chore_kids').insert(kidIds.map(k => ({ chore_id: id, kid_id: k }))));
+    },
+    async deleteChore(id) { ok(await sb.from('chores').delete().eq('id', id)); },
+    async saveReward(r) {
+      const row = { name: r.name, icon: r.icon, cost: r.cost };
+      if (r.id) ok(await sb.from('rewards').update(row).eq('id', r.id));
+      else ok(await sb.from('rewards').insert(row));
+    },
+    async deleteReward(id) { ok(await sb.from('rewards').delete().eq('id', id)); },
+    async saveKid(k) { ok(await sb.from('kids').update({ name: k.name, mode: k.mode }).eq('id', k.id)); },
+    async pairCode(kid) { return ok(await sb.rpc('create_pair_code', { p_kid: kid })); },
+    async unpair(id) { ok(await sb.from('devices').delete().eq('id', id)); },
+    async setPin(pin) { ok(await sb.from('household').update({ device_pin: pin }).eq('id', 1)); },
+    subscribe(onChange, onStatus) {
+      const ch = sb.channel('household-live')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'requests' }, p => onChange('requests', p))
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'ledger' }, p => onChange('ledger', p))
+        .subscribe(s => onStatus(s === 'SUBSCRIBED'));
+      return () => sb.removeChannel(ch);
+    },
+  };
+}
+
+// ------------------------------------------------------------------ state
+let S = null;                 // loaded data
+let me = '';
+let tab = 'approve';
+let live = false;
+let editing = null;           // { type: 'chore'|'reward'|'kid', item }
+let pairing = null;           // { kidId, code, until }
+let historyKid = 'all';
+let armed = null, armTimer = null;
+let busy = new Set();
+let unsub = null;
+let seenPending = new Set();
+
+const $ = s => document.querySelector(s);
+const root = $('#root');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const kidById = id => S.kids.find(k => k.id === id);
+const bal = id => (S.balances.find(b => b.kid_id === id) || {}).balance || 0;
+const kidVar = k => `--kid:${k ? k.colour : 'var(--muted)'}`;
+
+function ago(ts) {
+  if (!ts) return 'never';
+  const d = (Date.now() - new Date(ts).getTime()) / 1000;
+  if (d < 60) return 'just now';
+  if (d < 3600) return Math.floor(d / 60) + ' min ago';
+  if (d < 86400) return Math.floor(d / 3600) + ' hr ago';
+  const days = Math.floor(d / 86400);
+  return days === 1 ? 'yesterday' : days + ' days ago';
+}
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.hidden = false;
+  clearTimeout(toast.t); toast.t = setTimeout(() => { t.hidden = true; }, 2600);
+}
+function fail(e) { console.error(e); toast(e.message || 'Something went wrong. Check your connection and try again.'); }
+function ping() {
+  try { navigator.vibrate && navigator.vibrate(60); } catch (e) {}
+  try {
+    const ac = ping.ac || (ping.ac = new (window.AudioContext || window.webkitAudioContext)());
+    [[880, 0], [1175, .09]].forEach(([f, t]) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = 'triangle'; o.frequency.value = f;
+      g.gain.setValueAtTime(.0001, ac.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(.12, ac.currentTime + t + .02);
+      g.gain.exponentialRampToValueAtTime(.0001, ac.currentTime + t + .18);
+      o.connect(g).connect(ac.destination); o.start(ac.currentTime + t); o.stop(ac.currentTime + t + .2);
+    });
+  } catch (e) {}
+}
+
+// ------------------------------------------------------------------ boot and auth
+async function boot() {
+  if (!api) { root.innerHTML = setupNeeded(); return; }
+  api.onAuth(s => { if (!s) showAuth(); });
+  try {
+    const s = await api.session();
+    if (!s) return showAuth();
+    await afterSignIn();
+  } catch (e) { fail(e); showAuth(); }
+}
+
+function setupNeeded() {
+  return `<div class="wrap"><div class="auth card"><h2>Almost there</h2>
+    <p class="hint">Put your Supabase Project URL and publishable key into <b>config.js</b>, then reload.</p></div></div>`;
+}
+
+let authMode = 'in';
+function showAuth(msg) {
+  if (unsub) { unsub(); unsub = null; }
+  S = null;
+  root.innerHTML = `<div class="wrap"><form class="auth card" id="auth-form">
+    <div class="brand"><div class="mark" aria-hidden="true">C</div><div><h1>Chore Credits</h1><p class="sub">Parent app</p></div></div>
+    <div class="seg" role="group" aria-label="Sign in or create account">
+      <button type="button" data-auth="in" aria-pressed="${authMode === 'in'}">Sign in</button>
+      <button type="button" data-auth="up" aria-pressed="${authMode === 'up'}">New account</button>
+    </div>
+    <label class="field" for="email">Email<input id="email" type="email" autocomplete="email" required></label>
+    <label class="field" for="password">Password<input id="password" type="password" minlength="6" autocomplete="${authMode === 'in' ? 'current-password' : 'new-password'}" required></label>
+    ${msg ? `<p class="err">${esc(msg)}</p>` : ''}
+    <button class="btn go" type="submit" id="auth-go">${authMode === 'in' ? 'Sign in' : 'Create account'}</button>
+  </form></div>`;
+}
+
+async function afterSignIn() {
+  root.innerHTML = `<div class="wrap"><p class="hint">Loading…</p></div>`;
+  if (!(await api.isParent())) return showJoin();
+  me = await api.me();
+  await refresh();
+  if (unsub) unsub();
+  unsub = api.subscribe(onLive, s => { live = s; renderHeaderLive(); });
+}
+
+function showJoin(msg, needCode) {
+  root.innerHTML = `<div class="wrap"><form class="auth card" id="join-form">
+    <h2>Join your household</h2>
+    <p class="hint">The first parent to sign in sets things up. Anyone after that needs the invite code from the other parent's app (Settings).</p>
+    <label class="field" for="join-name">Your name, as the kids know you<input id="join-name" required maxlength="20" placeholder="Dad"></label>
+    <label class="field" for="join-code" ${needCode ? '' : 'hidden'}>Invite code<input id="join-code" maxlength="6" autocapitalize="characters" placeholder="ABC123"></label>
+    ${msg ? `<p class="err">${esc(msg)}</p>` : ''}
+    <div class="form-foot"><button class="btn" type="button" data-act="signout">Sign out</button><button class="btn go" type="submit">Continue</button></div>
+  </form></div>`;
+}
+
+// ------------------------------------------------------------------ live updates
+async function refresh() {
+  S = await api.load();
+  S.pending.forEach(r => seenPending.add(r.id));
+  render();
+}
+let liveTimer = null;
+function onLive(table, p) {
+  if (table === 'requests' && p.eventType === 'INSERT' && p.new && p.new.status === 'pending' && !seenPending.has(p.new.id)) {
+    const k = S && kidById(p.new.kid_id);
+    ping();
+    toast(`${k ? k.name : 'Someone'}: ${p.new.item_name}`);
+  }
+  clearTimeout(liveTimer);
+  liveTimer = setTimeout(() => refresh().catch(fail), 250);
+}
+document.addEventListener('visibilitychange', () => { if (!document.hidden && S) refresh().catch(fail); });
+setInterval(() => { if (!document.hidden && S && tab === 'settings') refresh().catch(fail); }, 30000);
+
+// ------------------------------------------------------------------ render
+function render() {
+  if (!S) return;
+  const n = S.pending.length;
+  root.innerHTML = `<div class="wrap">
+    <header class="top">
+      <div class="brand"><div class="mark" aria-hidden="true">C</div><div><h1>Chore Credits</h1><p class="sub">Hi ${esc(me)}</p></div></div>
+      <span class="live ${live ? 'on' : ''}" id="live">${live ? 'Live' : 'Connecting'}</span>
+    </header>
+    <section class="kids">${S.kids.map(kidCard).join('')}</section>
+    <section class="panel" id="panel">${panel()}</section>
+  </div>
+  <nav class="tabs" role="tablist"><div class="tabs-in">
+    ${[['approve', '🔔', 'Approve', n], ['chores', '🧹', 'Chores'], ['rewards', '🎁', 'Rewards'], ['history', '📜', 'History'], ['settings', '⚙️', 'Settings']]
+      .map(([id, ic, l, c]) => `<button class="tab" role="tab" aria-selected="${tab === id}" data-tab="${id}"><span class="ti" aria-hidden="true">${ic}</span>${l}${c ? `<span class="badge">${c}</span>` : ''}</button>`).join('')}
+  </div></nav>`;
+  document.title = n ? `(${n}) Chore Credits` : 'Chore Credits';
+  try { navigator.setAppBadge && (n ? navigator.setAppBadge(n) : navigator.clearAppBadge()); } catch (e) {}
+}
+function renderHeaderLive() { const el = $('#live'); if (el) { el.className = 'live' + (live ? ' on' : ''); el.textContent = live ? 'Live' : 'Connecting'; } }
+
+function kidCard(k) {
+  const p = S.pending.filter(r => r.kid_id === k.id).length;
+  const dev = S.devices.find(d => d.kid_id === k.id && d.paired_at);
+  return `<div class="kid" style="${kidVar(k)}">
+    <div class="kid-name"><span class="dot"></span>${esc(k.name)}</div>
+    <div class="kid-meta">${p ? `${p} waiting` : dev ? `device seen ${ago(dev.last_seen)}` : 'no device yet'}</div>
+    <div class="kid-bal"><span class="coin" aria-hidden="true"></span>${bal(k.id)}</div>
+  </div>`;
+}
+
+function panel() {
+  if (tab === 'approve') return approveHTML();
+  if (tab === 'chores') return editing && editing.type === 'chore' ? choreForm(editing.item) : choresHTML();
+  if (tab === 'rewards') return editing && editing.type === 'reward' ? rewardForm(editing.item) : rewardsHTML();
+  if (tab === 'history') return historyHTML();
+  return editing && editing.type === 'kid' ? kidForm(editing.item) : settingsHTML();
+}
+
+function approveHTML() {
+  if (!S.pending.length) return `<div class="empty"><strong>Nothing waiting</strong>When the kids tap a job or a treat on their device, it pops up here.</div>`;
+  return S.pending.map(r => {
+    const k = kidById(r.kid_id), chore = r.kind === 'chore';
+    const after = chore ? bal(r.kid_id) + r.amount : bal(r.kid_id) - r.amount;
+    const b = busy.has(r.id);
+    return `<div class="row" style="${kidVar(k)}">
+      <div class="ico">${pic(r.icon)}</div>
+      <div class="row-main"><div class="row-title">${esc(r.item_name)}</div>
+        <div class="row-sub"><span class="who"><span class="dot"></span>${esc(k ? k.name : '')}</span>${chore ? 'says it’s done' : 'wants to spend'} · ${ago(r.created_at)}${r.source === 'card' ? ' · card' : ''}</div></div>
+      <span class="amt ${chore ? 'plus' : 'minus'}">${chore ? '+' : '−'}${r.amount}</span>
+      <div class="actions">
+        <button class="btn go" data-approve="${r.id}" ${b ? 'disabled' : ''}>${chore ? 'Approve' : 'Allow it'} <span class="hint" style="color:inherit;opacity:.8">→ ${after}</span></button>
+        <button class="btn stop" data-decline="${r.id}" ${b ? 'disabled' : ''}>Not yet</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function delBtn(key) {
+  return `<button type="button" class="btn small ${armed === key ? 'armed' : 'stop'}" data-del="${key}">${armed === key ? 'Tap again to delete' : 'Delete'}</button>`;
+}
+
+function choresHTML() {
+  const rows = S.chores.map(c => {
+    const kids = S.kids.filter(k => c.chore_kids.some(ck => ck.kid_id === k.id));
+    return `<button class="row" data-edit-chore="${c.id}">
+      <div class="ico">${pic(c.icon)}</div>
+      <div class="row-main"><div class="row-title">${esc(c.name)}</div>
+        <div class="row-sub">${kids.length ? kids.map(k => `<span class="chip" style="${kidVar(k)}">${esc(k.name)}</span>`).join('') : '<span>Nobody yet</span>'}</div></div>
+      <span class="pill">+${c.credits}</span>
+    </button>`;
+  }).join('');
+  return `<div class="section-head"><h2>Chores</h2><button class="btn go small" data-new="chore">Add chore</button></div>
+    <p class="hint">Tap a chore to change it. Devices pick up changes within a few seconds.</p>
+    ${rows || '<div class="empty"><strong>No chores yet</strong>Add the first one.</div>'}`;
+}
+function iconPicker(list, current) {
+  return `<div class="icons" role="group" aria-label="Picture">${list.map(i => `<button type="button" data-icon="${i}" aria-pressed="${i === current}" aria-label="${i.toLowerCase()}">${pic(i)}</button>`).join('')}</div>`;
+}
+function choreForm(c) {
+  const kidSet = new Set(c.id ? c.chore_kids.map(x => x.kid_id) : S.kids.map(k => k.id));
+  return `<form class="card" id="chore-form">
+    <h2>${c.id ? 'Edit chore' : 'New chore'}</h2>
+    <div class="grid2">
+      <label class="field" for="f-name">Chore<input id="f-name" required maxlength="28" value="${esc(c.name || '')}" placeholder="Water the plants"></label>
+      <label class="field" for="f-num">Credits<input id="f-num" type="number" inputmode="numeric" min="1" max="20" required value="${c.credits || 2}"></label>
+    </div>
+    <div class="field">Picture${iconPicker(CHORE_ICONS, c.icon || 'STAR')}</div>
+    <div class="field">Who does it<div class="checks">${S.kids.map(k => `<label style="${kidVar(k)}"><input type="checkbox" id="f-kid-${k.id}" value="${k.id}" ${kidSet.has(k.id) ? 'checked' : ''}>${esc(k.name)}</label>`).join('')}</div></div>
+    <p class="hint">Keep names short. Joseph's device shows the picture only.</p>
+    <div class="form-foot">${c.id ? delBtn('chore:' + c.id) : ''}<span style="flex:1"></span>
+      <button type="button" class="btn" data-cancel>Cancel</button><button class="btn go" type="submit">Save</button></div>
+  </form>`;
+}
+
+function rewardsHTML() {
+  const rows = S.rewards.map(r => `<button class="row" data-edit-reward="${r.id}">
+      <div class="ico">${pic(r.icon)}</div>
+      <div class="row-main"><div class="row-title">${esc(r.name)}</div><div class="row-sub">Both kids</div></div>
+      <span class="pill">costs ${r.cost}</span>
+    </button>`).join('');
+  return `<div class="section-head"><h2>Rewards</h2><button class="btn go small" data-new="reward">Add reward</button></div>
+    ${rows || '<div class="empty"><strong>No rewards yet</strong>Add something worth saving for.</div>'}`;
+}
+function rewardForm(r) {
+  return `<form class="card" id="reward-form">
+    <h2>${r.id ? 'Edit reward' : 'New reward'}</h2>
+    <div class="grid2">
+      <label class="field" for="f-name">Reward<input id="f-name" required maxlength="28" value="${esc(r.name || '')}" placeholder="Choose Saturday breakfast"></label>
+      <label class="field" for="f-num">Cost<input id="f-num" type="number" inputmode="numeric" min="1" max="999" required value="${r.cost || 5}"></label>
+    </div>
+    <div class="field">Picture${iconPicker(REWARD_ICONS, r.icon || 'STAR')}</div>
+    <p class="hint">The device screen can't show the £ sign, so write "pound" if you need it.</p>
+    <div class="form-foot">${r.id ? delBtn('reward:' + r.id) : ''}<span style="flex:1"></span>
+      <button type="button" class="btn" data-cancel>Cancel</button><button class="btn go" type="submit">Save</button></div>
+  </form>`;
+}
+
+function historyHTML() {
+  const rows = S.ledger.filter(l => historyKid === 'all' || l.kid_id === historyKid).map(l => {
+    const k = kidById(l.kid_id);
+    return `<div class="row" style="${kidVar(k)}">
+      <div class="ico"><span class="coin" aria-hidden="true"></span></div>
+      <div class="row-main"><div class="row-title">${esc(l.label)}</div>
+        <div class="row-sub"><span class="who"><span class="dot"></span>${esc(k ? k.name : '')}</span>${ago(l.created_at)}${l.created_by ? ' · ' + esc(l.created_by) : ''}</div></div>
+      <span class="amt ${l.amount >= 0 ? 'plus' : 'minus'}">${l.amount >= 0 ? '+' : '−'}${Math.abs(l.amount)}</span>
+    </div>`;
+  }).join('');
+  return `<form class="card" id="adjust-form">
+      <h2>Bonus or take off</h2>
+      <div class="grid2">
+        <label class="field" for="adj-kid">Who<select id="adj-kid">${S.kids.map(k => `<option value="${k.id}">${esc(k.name)}</option>`).join('')}</select></label>
+        <label class="field" for="adj-amt">Credits<input id="adj-amt" type="number" inputmode="numeric" min="-500" max="500" value="1" required></label>
+      </div>
+      <label class="field" for="adj-label">Reason<input id="adj-label" maxlength="40" placeholder="Helped with the shopping"></label>
+      <div class="form-foot"><button class="btn go" type="submit">Add to balance</button></div>
+    </form>
+    <div class="section-head"><h2>History</h2>
+      <select id="hist-kid" class="btn small" aria-label="Show history for">
+        <option value="all">Everyone</option>${S.kids.map(k => `<option value="${k.id}" ${historyKid === k.id ? 'selected' : ''}>${esc(k.name)}</option>`).join('')}
+      </select></div>
+    ${rows || '<div class="empty"><strong>No history yet</strong>Approved jobs and treats appear here.</div>'}`;
+}
+
+function settingsHTML() {
+  const devices = S.kids.map(k => {
+    const d = S.devices.find(x => x.kid_id === k.id && x.paired_at);
+    const p = pairing && pairing.kidId === k.id && pairing.until > Date.now() ? pairing : null;
+    const online = d && d.last_seen && Date.now() - new Date(d.last_seen) < 120000;
+    return `<div class="card" style="${kidVar(k)}">
+      <div class="section-head" style="margin:0"><h2 class="kid-name"><span class="dot"></span>${esc(k.name)}'s device</h2>
+        ${d ? `<span class="status ${online ? 'ok' : 'off'}">${online ? 'Online' : 'Offline'}</span>` : ''}</div>
+      ${d ? `<p class="hint">Last seen ${ago(d.last_seen)}${d.battery != null ? ` · battery ${d.battery}%` : ''}${d.firmware ? ` · ${esc(d.firmware)}` : ''}</p>` : '<p class="hint">Not paired yet.</p>'}
+      ${p ? `<div class="code" aria-label="Pairing code">${esc(p.code)}</div>
+        <ol class="steps hint">
+          <li>Turn on ${esc(k.name)}'s device. It shows "Wi-Fi setup".</li>
+          <li>On this phone, join the Wi-Fi network it names (ChoreCredits-…).</li>
+          <li>On the page that opens, tap <b>Configure WiFi</b>, pick your home Wi-Fi, type its password and this code, then Save.</li>
+        </ol>
+        <p class="hint">The code works for 30 minutes.</p>` : ''}
+      <div class="form-foot">
+        <button class="btn small" data-edit-kid="${k.id}">Name and screen style</button>
+        ${d ? delBtn('device:' + d.id) : ''}
+        <button class="btn ${d ? '' : 'go'} small" data-pair="${k.id}">${d ? 'Re-pair' : 'Pair device'}</button>
+      </div>
+    </div>`;
+  }).join('');
+  return `<h2>Devices</h2>${devices}
+    <div class="card">
+      <h2>Parent PIN on the devices</h2>
+      <p class="hint">Opens parent mode on a device (hold the name bar for 2 seconds). Devices pick it up within a few seconds.</p>
+      <form class="grid2" id="pin-form"><label class="field" for="pin">PIN<input id="pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" required value="${esc(S.household.device_pin)}"></label>
+        <div style="display:flex;align-items:flex-end"><button class="btn go" type="submit" style="width:100%">Save PIN</button></div></form>
+    </div>
+    <div class="card">
+      <h2>Add another parent</h2>
+      <p class="hint">They make an account in this app, then enter this invite code.</p>
+      <div class="code">${esc(S.household.invite_code)}</div>
+    </div>
+    <div class="form-foot"><button class="btn" data-act="signout">Sign out</button></div>`;
+}
+
+function kidForm(k) {
+  return `<form class="card" id="kid-form" style="${kidVar(k)}">
+    <h2>${esc(k.name)}</h2>
+    <label class="field" for="k-name">Name on the device<input id="k-name" required maxlength="16" value="${esc(k.name)}"></label>
+    <div class="field">Screen style<div class="seg" role="group">
+      <button type="button" data-mode="words" aria-pressed="${k.mode === 'words'}">Words and numbers</button>
+      <button type="button" data-mode="pictures" aria-pressed="${k.mode === 'pictures'}">Big pictures</button></div></div>
+    <div class="form-foot"><button type="button" class="btn" data-cancel>Cancel</button><button class="btn go" type="submit">Save</button></div>
+  </form>`;
+}
+
+// ------------------------------------------------------------------ events
+root.addEventListener('click', async e => {
+  const t = e.target.closest('button');
+  if (!t) return;
+  const d = t.dataset;
+  try {
+    if (d.auth) { authMode = d.auth; showAuth(); return; }
+    if (d.act === 'signout') { await api.signOut(); showAuth(); return; }
+    if (d.tab) { tab = d.tab; editing = null; armed = null; render(); window.scrollTo(0, 0); return; }
+    if (d.approve || d.decline) {
+      const id = d.approve || d.decline;
+      busy.add(id); render();
+      try { await api.resolve(id, !!d.approve); toast(d.approve ? 'Approved. Their device will celebrate.' : 'Declined'); }
+      finally { busy.delete(id); }
+      await refresh(); return;
+    }
+    if (d.new) { editing = { type: d.new, item: {} }; render(); return; }
+    if (d.editChore) { editing = { type: 'chore', item: S.chores.find(c => c.id === d.editChore) }; render(); return; }
+    if (d.editReward) { editing = { type: 'reward', item: S.rewards.find(r => r.id === d.editReward) }; render(); return; }
+    if (d.editKid) { editing = { type: 'kid', item: { ...kidById(d.editKid) } }; render(); return; }
+    if (d.cancel !== undefined) { editing = null; render(); return; }
+    if (d.icon) { t.parentElement.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b === t)); return; }
+    if (d.mode) { editing.item.mode = d.mode; t.parentElement.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b === t)); return; }
+    if (d.pair) {
+      const code = await api.pairCode(d.pair);
+      pairing = { kidId: d.pair, code, until: Date.now() + 30 * 60000 };
+      render(); return;
+    }
+    if (d.del) {
+      clearTimeout(armTimer);
+      if (armed !== d.del) { armed = d.del; render(); armTimer = setTimeout(() => { armed = null; render(); }, 3000); return; }
+      armed = null;
+      const [type, id] = d.del.split(':');
+      if (type === 'chore') await api.deleteChore(id);
+      if (type === 'reward') await api.deleteReward(id);
+      if (type === 'device') await api.unpair(id);
+      editing = null; toast('Deleted'); await refresh(); return;
+    }
+  } catch (err) { fail(err); }
+});
+
+root.addEventListener('change', e => { if (e.target.id === 'hist-kid') { historyKid = e.target.value; render(); } });
+
+root.addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = e.target, btn = f.querySelector('[type=submit]');
+  if (btn) btn.disabled = true;
+  try {
+    if (f.id === 'auth-form') {
+      const email = $('#email').value.trim(), pw = $('#password').value;
+      try { authMode === 'in' ? await api.signIn(email, pw) : await api.signUp(email, pw); }
+      catch (err) { return showAuth(/invalid login/i.test(err.message) ? 'That email and password don’t match. Check them, or make a new account.' : err.message); }
+      return afterSignIn();
+    }
+    if (f.id === 'join-form') {
+      const name = $('#join-name').value.trim(), codeEl = $('#join-code');
+      try { await api.join(name, codeEl ? codeEl.value.trim() : ''); }
+      catch (err) { return showJoin(err.message, true); }
+      return afterSignIn();
+    }
+    if (f.id === 'chore-form' || f.id === 'reward-form') {
+      const name = $('#f-name').value.trim(), num = Math.round(+$('#f-num').value);
+      const icon = (f.querySelector('[data-icon][aria-pressed="true"]') || {}).dataset?.icon || 'STAR';
+      if (f.id === 'chore-form') {
+        const kidIds = S.kids.filter(k => $('#f-kid-' + k.id).checked).map(k => k.id);
+        await api.saveChore({ id: editing.item.id, name, icon, credits: num }, kidIds);
+      } else await api.saveReward({ id: editing.item.id, name, icon, cost: num });
+      editing = null; toast('Saved'); await refresh(); return;
+    }
+    if (f.id === 'kid-form') {
+      await api.saveKid({ id: editing.item.id, name: $('#k-name').value.trim(), mode: editing.item.mode });
+      editing = null; toast('Saved'); await refresh(); return;
+    }
+    if (f.id === 'adjust-form') {
+      const amt = Math.round(+$('#adj-amt').value);
+      if (!amt) { toast('Pick a number other than 0'); return; }
+      await api.adjust($('#adj-kid').value, amt, $('#adj-label').value.trim());
+      toast(amt > 0 ? `Added ${amt}` : `Took off ${-amt}`); await refresh(); return;
+    }
+    if (f.id === 'pin-form') { await api.setPin($('#pin').value); toast('PIN saved'); await refresh(); return; }
+  } catch (err) { fail(err); }
+  finally { if (btn && btn.isConnected) btn.disabled = false; }
+});
+
+if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+boot();
+})();
+</script>
+</body>
+</html>
